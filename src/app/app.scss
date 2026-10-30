@@ -1,0 +1,214 @@
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 68% 50%, transparent 18%, #02040b44 72%, #02040bb0 100%);
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.13'/%3E%3C/svg%3E");
+}
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  height: 2px;
+  span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #6fa8ff, #d9f3ff, #62e6b4);
+    box-shadow: 0 0 14px #9fdcff;
+    animation: progress 0.85s cubic-bezier(0.6, 0, 0.3, 1) both;
+  }
+}
+
+.top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 26px clamp(22px, 5vw, 78px);
+  pointer-events: none;
+  > * {
+    pointer-events: auto;
+  }
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.brandmark {
+  display: grid;
+  place-items: center;
+  width: 39px;
+  height: 39px;
+  border: 1px solid #b5deff6b;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #17314f, #122031);
+  color: #a5e4ff;
+  box-shadow: 0 0 25px #49a9f628;
+  svg {
+    width: 26px;
+    height: 26px;
+    overflow: visible;
+  }
+  .orbit {
+    transform-origin: 20px 20px;
+    animation: orbit 7s linear infinite;
+  }
+}
+
+.brandname {
+  display: block;
+  font-size: 18px;
+  font-weight: 850;
+  letter-spacing: 0.19em;
+}
+
+.branddesc {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 0.23em;
+  color: #8191a4;
+}
+
+.topright {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #90a0b1;
+}
+
+.online {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #62e6b4;
+  box-shadow: 0 0 14px #62e6b4;
+  animation: blink 2.4s ease-in-out infinite;
+}
+
+.caption {
+  animation: caption 0.6s ease both;
+}
+
+.back {
+  padding: 10px 14px;
+  border: 1px solid #ffffff25;
+  border-radius: 10px;
+  background: #ffffff09;
+  color: #dce9f6;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: background 0.25s;
+  &:hover {
+    background: #ffffff18;
+  }
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    filter 0.24s ease,
+    transform 0.24s ease;
+  &.leaving {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateX(-18px);
+  }
+}
+
+.bottom {
+  position: fixed;
+  z-index: 10;
+  left: clamp(22px, 5vw, 78px);
+  right: clamp(22px, 5vw, 78px);
+  bottom: 27px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  color: #71849b;
+  pointer-events: none;
+  b {
+    color: #b7cedf;
+  }
+}
+
+.scrollhint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  i {
+    display: inline-block;
+    width: 22px;
+    height: 1px;
+    background: #a6d9ff;
+  }
+}
+
+@media (max-width: 850px) {
+  .top {
+    padding: 18px 22px;
+  }
+  .caption,
+  .branddesc {
+    display: none;
+  }
+  .bottom {
+    display: none;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes caption {
+  from {
+    opacity: 0;
+    letter-spacing: 0.4em;
+  }
+}

@@ -1,0 +1,47 @@
+<section class="page">
+  <div class="chooser">
+    <div class="kicker rise">● ONECORE / UYGULAMA MERKEZİ</div>
+    <h2 class="rise" style="--d: 100">Bir evren.<br />Birçok <span>perspektif.</span></h2>
+    <p class="rise" style="--d: 220">
+      Altyapıyı ilişkileriyle keşfedin veya değişiklikleri gerçek zamanlı analiz edin. Başlamak için bir uygulama seçin.
+    </p>
+
+    <div class="apps">
+      @for (app of active; track app.id; let i = $index) {
+        <a
+          class="app rise"
+          [ocNav]="app.route"
+          [style.--d]="320 + i * 120"
+          [style.--c]="app.color"
+          (pointerenter)="hover(app)"
+          (pointerleave)="hover(null)"
+          (pointermove)="track($event)"
+        >
+          <span class="appicon"><oc-app-icon [icon]="app.icon" [color]="app.color" /></span>
+          <strong>{{ app.name }}</strong>
+          <small>{{ app.description }}</small>
+          <span class="tag">{{ app.motto }}</span>
+        </a>
+      }
+    </div>
+
+    <div class="soon-apps">
+      @for (app of upcoming; track app.id; let i = $index) {
+        <div
+          class="app soon rise"
+          role="group"
+          aria-disabled="true"
+          [attr.aria-label]="app.name + ' — yakında'"
+          [style.--d]="560 + i * 90"
+          [style.--c]="app.color"
+          (pointermove)="track($event)"
+        >
+          <span class="soon-badge">YAKINDA</span>
+          <span class="appicon"><oc-app-icon [icon]="app.icon" [color]="app.color" /></span>
+          <strong>{{ app.name }}</strong>
+          <small>{{ app.description }}</small>
+        </div>
+      }
+    </div>
+  </div>
+</section>

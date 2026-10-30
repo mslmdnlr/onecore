@@ -1,0 +1,234 @@
+.chooser {
+  position: absolute;
+  top: 50%;
+  left: clamp(27px, 7vw, 110px);
+  width: min(800px, 86vw);
+  transform: translateY(-50%);
+
+  h2 {
+    margin: 0 0 16px;
+    font-size: clamp(42px, 4.6vw, 64px);
+    font-weight: 780;
+    line-height: 1.05;
+    letter-spacing: -0.075em;
+    span {
+      color: #9ddcff;
+    }
+  }
+  > p {
+    max-width: 460px;
+    margin: 0 0 28px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #91a4b9;
+  }
+}
+
+.apps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.app {
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(290px, 42vw);
+  min-height: 205px;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid #a6c8ec30;
+  border-radius: 20px;
+  background: linear-gradient(150deg, #101d30d9, #09111dbb);
+  backdrop-filter: blur(12px);
+  color: #fff;
+  text-decoration: none;
+  animation-fill-mode: backwards;
+  transition:
+    transform 0.3s,
+    border-color 0.3s,
+    box-shadow 0.3s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(360px circle at var(--mx) var(--my), color-mix(in srgb, var(--c) 20%, transparent), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  &::after {
+    content: '↗';
+    position: absolute;
+    top: 19px;
+    right: 22px;
+    font-size: 22px;
+    color: #a0c8e6;
+    transition:
+      transform 0.3s,
+      color 0.3s;
+  }
+  &:hover {
+    transform: translateY(-7px);
+    border-color: color-mix(in srgb, var(--c) 60%, transparent);
+    box-shadow: 0 24px 60px -24px color-mix(in srgb, var(--c) 55%, transparent);
+    &::before {
+      opacity: 1;
+    }
+    &::after {
+      color: var(--c);
+      transform: translate(3px, -3px);
+    }
+  }
+  &:focus-visible {
+    outline: 2px solid var(--c);
+    outline-offset: 4px;
+  }
+
+  strong {
+    font-size: 27px;
+    letter-spacing: -0.05em;
+  }
+  small {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: #91a5bc;
+  }
+}
+
+.appicon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: auto;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  oc-app-icon {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.tag {
+  margin-top: 18px;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--c);
+  opacity: 0.85;
+}
+
+// Yakında gelecek uygulamalar: aynı kart, daha sade ve tıklanamaz
+.soon-apps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+  max-width: 596px;
+}
+
+.app.soon {
+  width: auto;
+  min-height: 150px;
+  padding: 18px;
+  border-style: dashed;
+  border-color: #a6c8ec26;
+  background: linear-gradient(150deg, #0d1828b8, #080f1a99);
+  cursor: default;
+
+  &::after {
+    content: none;
+  }
+  &:hover {
+    transform: none;
+    border-color: color-mix(in srgb, var(--c) 35%, transparent);
+    box-shadow: none;
+    &::before {
+      opacity: 0.5;
+    }
+  }
+
+  .appicon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    opacity: 0.75;
+    oc-app-icon {
+      width: 26px;
+      height: 26px;
+    }
+  }
+  strong {
+    font-size: 17px;
+    letter-spacing: -0.03em;
+    color: #c9d6e4;
+  }
+  small {
+    margin-top: 5px;
+    font-size: 11px;
+    line-height: 1.45;
+    color: #7d8fa4;
+  }
+}
+
+.soon-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 8px;
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--c);
+}
+
+@media (max-width: 1100px) {
+  .soon-apps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .chooser {
+    top: 86px;
+    bottom: 84px;
+    left: 25px;
+    width: calc(100% - 50px);
+    padding-bottom: 28px;
+    overflow-y: auto;
+    transform: none;
+    h2 {
+      font-size: 42px;
+    }
+    > p {
+      margin-bottom: 18px;
+      font-size: 13px;
+    }
+  }
+  .apps {
+    gap: 12px;
+  }
+  .app {
+    width: calc(50% - 6px);
+    min-height: 190px;
+    padding: 16px;
+    strong {
+      font-size: 21px;
+    }
+    small {
+      font-size: 11px;
+    }
+  }
+  .tag {
+    display: none;
+  }
+}
