@@ -7,20 +7,29 @@ attribute float a_size;
 attribute vec4 a_col;
 uniform vec2 u_res;
 uniform float u_dpr;
+uniform float u_halo;
 varying vec4 v_col;
+varying float v_halo;
 void main() {
   vec2 c = a_pos / u_res * 2.0 - 1.0;
-  gl_Position = vec4(c.x, -c.y, 0.0, 1.0);
-  gl_PointSize = max(1.0, a_size * u_dpr);
+  // Halo geçişinde sönük noktalar ekran dışına atılır; yalnızca parlaklar ışır
+  bool skip = u_halo > 0.5 && a_col.a < 0.45;
+  gl_Position = skip ? vec4(2.0, 2.0, 2.0, 1.0) : vec4(c.x, -c.y, 0.0, 1.0);
+  gl_PointSize = max(1.0, a_size * u_dpr * (1.0 + u_halo * 2.6));
   v_col = a_col;
+  v_halo = u_halo;
 }`;
 
+// Halo geçişinde yalnızca parlak noktalar (alfa²) yumuşak bir ışıma bırakır
 const FRAG = `
 precision mediump float;
 varying vec4 v_col;
+varying float v_halo;
 void main() {
   float d = length(gl_PointCoord - 0.5);
-  float a = (1.0 - smoothstep(0.12, 0.5, d)) * v_col.a;
+  float a = v_halo > 0.5
+    ? exp(-d * d * 18.0) * v_col.a * v_col.a * 0.2
+    : (1.0 - smoothstep(0.12, 0.5, d)) * v_col.a;
   gl_FragColor = vec4(v_col.rgb * a, a);
 }`;
 
@@ -33,6 +42,7 @@ export class PointRenderer {
     private readonly gl: WebGLRenderingContext,
     private readonly uRes: WebGLUniformLocation,
     private readonly uDpr: WebGLUniformLocation,
+    private readonly uHalo: WebGLUniformLocation,
     capacity: number,
   ) {
     this.data = new Float32Array(capacity * STRIDE);
@@ -77,6 +87,7 @@ export class PointRenderer {
       gl,
       gl.getUniformLocation(prog, 'u_res')!,
       gl.getUniformLocation(prog, 'u_dpr')!,
+      gl.getUniformLocation(prog, 'u_halo')!,
       capacity,
     );
   }
@@ -93,6 +104,10 @@ export class PointRenderer {
     const gl = this.gl;
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.data.subarray(0, count * STRIDE));
+    // Önce geniş ve sönük ışıma, ardından keskin çekirdek
+    gl.uniform1f(this.uHalo, 1);
+    gl.drawArrays(gl.POINTS, 0, count);
+    gl.uniform1f(this.uHalo, 0);
     gl.drawArrays(gl.POINTS, 0, count);
   }
 }

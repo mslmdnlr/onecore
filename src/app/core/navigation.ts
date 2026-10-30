@@ -15,9 +15,12 @@ export class Nav {
 
   readonly leaving = signal(false);
   readonly progress = signal(false);
+  /** Ctrl+K komut paleti */
+  readonly paletteOpen = signal(false);
 
   async go(url: string, opts: { dive?: boolean } = {}) {
     if (this.leaving() || this.router.url === url) return;
+    this.paletteOpen.set(false);
     this.leaving.set(true);
     if (opts.dive) {
       this.progress.set(true);

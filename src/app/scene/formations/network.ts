@@ -61,8 +61,8 @@ export class NetworkFormation implements Formation {
 
     const weights = CI_NODES.map((_, i) => (i === 0 ? 5 : this.depth[i] === 1 ? 2 : 1.3));
     const wSum = weights.reduce((a, b) => a + b, 0);
-    const clusterEnd = Math.floor(n * 0.24);
-    const streamEnd = clusterEnd + Math.floor(n * 0.66);
+    const clusterEnd = Math.floor(n * 0.36);
+    const streamEnd = clusterEnd + Math.floor(n * 0.54);
 
     let i = 0;
     weights.forEach((w, node) => {
@@ -164,7 +164,7 @@ export class NetworkFormation implements Formation {
           cf[0] + (ct[0] - cf[0]) * u + gl,
           cf[1] + (ct[1] - cf[1]) * u + gl,
           cf[2] + (ct[2] - cf[2]) * u + gl,
-          Math.min(1, (0.12 + 0.7 * tr) * incident + gl * 0.4),
+          Math.min(1, (0.08 + 0.55 * tr) * incident + gl * 0.4),
           1.1 + tr * 1.1,
         );
       } else {
@@ -237,8 +237,24 @@ export class NetworkFormation implements Formation {
         g.arc(p.x, p.y, (i === 0 ? 22 : 14) * p.k, 0, TAU);
         g.stroke();
       }
-      g.fillStyle = `rgba(222,240,255,${a})`;
-      g.font = i === 0 ? '800 13px Inter, system-ui, sans-serif' : '600 10.5px Inter, system-ui, sans-serif';
+      // Düğüm işareti: renkli çekirdek ve ince halka
+      const color = i === 0 ? ROOT_COLOR : CI_COLORS[c.type];
+      const r = (i === 0 ? 5.5 : 3.2) * p.k;
+      g.save();
+      g.globalAlpha *= dim ? 0.35 : 1;
+      g.fillStyle = color;
+      g.beginPath();
+      g.arc(p.x, p.y, r, 0, TAU);
+      g.fill();
+      g.strokeStyle = color;
+      g.globalAlpha *= 0.45;
+      g.beginPath();
+      g.arc(p.x, p.y, r + (i === 0 ? 7 : 4.5) * p.k, 0, TAU);
+      g.stroke();
+      g.restore();
+
+      g.fillStyle = `rgba(226,240,255,${a})`;
+      g.font = i === 0 ? '800 13px Inter, system-ui, sans-serif' : '600 11px Inter, system-ui, sans-serif';
       g.fillText(i === 0 ? 'ONECORE' : c.name, p.x, p.y - (i === 0 ? 30 : 17) * p.k);
     });
     g.textAlign = 'start';

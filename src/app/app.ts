@@ -6,12 +6,13 @@ import { Nav, NavLink } from './core/navigation';
 import { SceneState } from './core/scene-state';
 import { Scene } from './scene/scene';
 import { SceneMode } from './scene/types';
-import { DOCK_ITEMS, Dock } from './shared/dock/dock';
+import { MainNav, NAV_ITEMS } from './shared/main-nav/main-nav';
+import { Palette } from './shared/palette/palette';
 
 const deepest = (r: ActivatedRouteSnapshot): ActivatedRouteSnapshot => (r.firstChild ? deepest(r.firstChild) : r);
 
 @Component({
-  imports: [RouterOutlet, Scene, NavLink, Dock],
+  imports: [RouterOutlet, Scene, NavLink, MainNav, Palette],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
@@ -31,23 +32,23 @@ export class App {
     ),
     { initialValue: {} as Data },
   );
-  protected readonly stage = computed(() => (this.data()['stage'] as string) ?? '');
   protected readonly back = computed(() => this.data()['back'] as string | undefined);
 
   constructor() {
     effect(() => this.scene.mode.set((this.data()['scene'] as SceneMode) ?? 'datacenter'));
   }
 
-  /** Esc: bir önceki ekran · 1-4: dock'taki hedefe doğrudan geçiş */
+  /** Esc: bir önceki ekran · 1-4: ana gezinmedeki hedefe doğrudan geçiş */
   protected onKey(e: KeyboardEvent) {
     const el = e.target as HTMLElement;
-    if (e.ctrlKey || e.metaKey || e.altKey || el.closest('input, textarea, select, [contenteditable]')) return;
+    if (this.nav.paletteOpen() || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (el.closest('input, textarea, select, [contenteditable]')) return;
     if (e.key === 'Escape') {
       const back = this.back();
       if (back) this.nav.go(back);
       return;
     }
-    const item = DOCK_ITEMS[Number(e.key) - 1];
+    const item = NAV_ITEMS[Number(e.key) - 1];
     if (item) this.nav.go(item.url);
   }
 }

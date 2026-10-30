@@ -101,6 +101,47 @@
   color: #90a0b1;
 }
 
+.search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px 7px 11px;
+  border: 1px solid #ffffff1f;
+  border-radius: 10px;
+  background: #ffffff08;
+  color: #a9bacb;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.25s,
+    border-color 0.25s;
+  &:hover {
+    background: #ffffff14;
+    border-color: #ffffff33;
+  }
+  &:focus-visible {
+    outline: 2px solid #9fddff;
+    outline-offset: 2px;
+  }
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  kbd {
+    padding: 2px 6px;
+    border: 1px solid #ffffff24;
+    border-radius: 5px;
+    font: 600 9px var(--font);
+    letter-spacing: 0.04em;
+    color: #7f93a8;
+  }
+}
+
 .online {
   width: 7px;
   height: 7px;
@@ -108,10 +149,6 @@
   background: #62e6b4;
   box-shadow: 0 0 14px #62e6b4;
   animation: blink 2.4s ease-in-out infinite;
-}
-
-.caption {
-  animation: caption 0.6s ease both;
 }
 
 .back {
@@ -179,9 +216,13 @@
   .top {
     padding: 18px 22px;
   }
-  .caption,
-  .branddesc {
+  .branddesc,
+  .search span,
+  .search kbd {
     display: none;
+  }
+  .search {
+    padding: 9px;
   }
   .bottom {
     display: none;
@@ -204,11 +245,5 @@
 @keyframes blink {
   50% {
     opacity: 0.35;
-  }
-}
-@keyframes caption {
-  from {
-    opacity: 0;
-    letter-spacing: 0.4em;
   }
 }

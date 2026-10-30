@@ -21,11 +21,14 @@
       <span class="branddesc">TÜM VERİ TEK MERKEZDE</span>
     </span>
   </a>
+  <oc-main-nav />
   <div class="topright">
-    <span class="online"></span>
-    @for (s of [stage()]; track s) {
-      <span class="caption">{{ s }}</span>
-    }
+    <button class="search" type="button" (click)="nav.paletteOpen.set(true)" aria-label="Ara (Ctrl+K)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+      <span>Ara</span>
+      <kbd>Ctrl K</kbd>
+    </button>
+    <span class="online" role="img" aria-label="Tüm sistemler çevrimiçi" title="Tüm sistemler çevrimiçi"></span>
     @if (back(); as b) {
       <a class="back" [ocNav]="b">← Geri</a>
     }
@@ -36,9 +39,9 @@
   <router-outlet />
 </main>
 
-<oc-dock />
+<oc-palette />
 
 <footer class="bottom">
   <span>ONECORE <b>—</b> TÜM VERİ TEK MERKEZDE</span>
-  <span class="scrollhint"><i></i> ESC GERİ · 1–4 HIZLI GEÇİŞ</span>
+  <span class="scrollhint"><i></i> CTRL K ARA · ESC GERİ · 1–4 HIZLI GEÇİŞ</span>
 </footer>

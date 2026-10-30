@@ -55,7 +55,7 @@ export class RadarFormation implements Formation {
         r: rand(0.35, 2),
         y: gauss() * 0.3,
         hot,
-        label: `ALM-${1040 + s} · ${CI_NAMES[s % CI_NAMES.length]}`,
+        label: `ALM-${1040 + s} · ${CI_NAMES[Math.floor(s / 11) % CI_NAMES.length]}`,
         glow: 0,
       });
     }
@@ -67,9 +67,9 @@ export class RadarFormation implements Formation {
       0,
     );
 
-    const ringEnd = Math.floor(n * 0.34);
+    const ringEnd = Math.floor(n * 0.5);
     const spokeEnd = ringEnd + Math.floor(n * 0.06);
-    const signalEnd = spokeEnd + Math.floor(n * 0.46);
+    const signalEnd = spokeEnd + Math.floor(n * 0.3);
     for (let i = 0; i < n; i++) {
       if (i < ringEnd) {
         const ring = Math.min(RINGS - 1, Math.floor(Math.sqrt(Math.random()) * RINGS));
@@ -123,7 +123,7 @@ export class RadarFormation implements Formation {
           ORANGE[0] + (HOT_WHITE[0] - ORANGE[0]) * w,
           ORANGE[1] + (HOT_WHITE[1] - ORANGE[1]) * w,
           ORANGE[2] + (HOT_WHITE[2] - ORANGE[2]) * w,
-          (k === 0 ? 0.16 : 0.07) + 0.75 * w,
+          (k === 0 ? 0.32 : 0.13) + 0.68 * w,
           1.2 + w * 0.9,
         );
       } else if (k === 2) {
@@ -208,23 +208,39 @@ export class RadarFormation implements Formation {
     }
 
     // Kritik alarmlar: diske iniş çizgisi ve etiket
+    const alarms = this.signals
+      .filter((s) => s.hot)
+      .map((s) => {
+        const x = Math.cos(s.phi) * s.r;
+        const z = Math.sin(s.phi) * s.r;
+        return { s, top: { ...f.project(x, s.y, z, p) }, floor: { ...f.project(x, 0, z, q) } };
+      })
+      // Kameraya en yakın alarmlar etiket önceliği alır
+      .sort((a, b) => a.top.z - b.top.z);
+
     g.font = '600 9.5px Inter, system-ui, sans-serif';
-    for (const s of this.signals) {
-      if (!s.hot) continue;
-      const x = Math.cos(s.phi) * s.r;
-      const z = Math.sin(s.phi) * s.r;
-      f.project(x, s.y, z, p);
-      f.project(x, 0, z, q);
-      const a = 0.4 + 0.5 * Math.min(1, p.k);
+    const placed: [number, number, number, number][] = [];
+    for (const { s, top, floor } of alarms) {
+      const a = 0.4 + 0.5 * Math.min(1, top.k);
       g.setLineDash([2, 3]);
       g.strokeStyle = `rgba(255,110,90,${a * 0.6})`;
       g.beginPath();
-      g.moveTo(p.x, p.y);
-      g.lineTo(q.x, q.y);
+      g.moveTo(top.x, top.y);
+      g.lineTo(floor.x, floor.y);
       g.stroke();
       g.setLineDash([]);
+
+      // Etiketler çakışmaz ve ekrandan taşmaz; sığmayan atlanır
+      const w = g.measureText(s.label).width + 6;
+      const lx = top.x + 10;
+      const ly = top.y - 18;
+      const free =
+        lx + w < f.width - 12 &&
+        !placed.some(([x, y, pw, ph]) => lx < x + pw && lx + w > x && ly < y + ph && ly + 14 > y);
+      if (!free) continue;
+      placed.push([lx, ly, w, 14]);
       g.fillStyle = `rgba(255,150,130,${a})`;
-      g.fillText(s.label, p.x + 10, p.y - 8);
+      g.fillText(s.label, lx, top.y - 8);
     }
   }
 }

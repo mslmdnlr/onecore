@@ -74,7 +74,7 @@ export class GalaxyFormation implements Formation {
       const tn = this.tone[i];
       switch (this.kind[i]) {
         case 0:
-          put(T, i, x, this.y[i], z, CORE[0], CORE[1], CORE[2], 0.4, 1.8);
+          put(T, i, x, this.y[i], z, CORE[0], CORE[1], CORE[2], 0.55, 2);
           break;
         case 1: {
           const r = BLUE[0] + (VIOLET[0] - BLUE[0]) * tn;

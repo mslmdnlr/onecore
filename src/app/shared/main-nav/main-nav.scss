@@ -1,0 +1,210 @@
+// ——— Masaüstü: üst barın ortasında sekme grubu ———
+:host {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: nav-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s both;
+}
+
+.nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid #ffffff1c;
+  border-radius: 14px;
+  background: #0a1424b3;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 10px 40px -18px #000c;
+}
+
+// Aktif sekmenin arkasında kayan vurgu
+.indicator {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  border: 1px solid color-mix(in srgb, var(--c) 38%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 30%;
+    right: 30%;
+    bottom: -1px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--c);
+    box-shadow: 0 0 10px var(--c);
+  }
+
+  &.ready {
+    transition:
+      transform 0.5s cubic-bezier(0.3, 1.25, 0.45, 1),
+      width 0.5s cubic-bezier(0.3, 1.25, 0.45, 1),
+      background 0.4s,
+      border-color 0.4s;
+    &::after {
+      transition:
+        background 0.4s,
+        box-shadow 0.4s;
+    }
+  }
+}
+
+.sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 5px;
+  background: #ffffff1c;
+}
+
+.item {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 11px;
+  border-radius: 10px;
+  color: #8fa3b8;
+  font-size: 13px;
+  font-weight: 550;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.25s;
+
+  &:hover {
+    color: #e4eef8;
+  }
+  &.active {
+    color: #fff;
+    .ico {
+      color: var(--c);
+    }
+  }
+  &:focus-visible {
+    outline: 2px solid var(--c);
+    outline-offset: 1px;
+  }
+}
+
+.ico {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  transition: color 0.25s;
+  svg,
+  oc-app-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// Yalnızca simgeli görünümlerde ad ve kısayolu gösteren ipucu
+.tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  display: none;
+  padding: 6px 9px;
+  border: 1px solid #ffffff1f;
+  border-radius: 8px;
+  background: #07121ef0;
+  color: #dce9f6;
+  font-size: 11px;
+  font-weight: 500;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -4px);
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+
+  kbd {
+    margin-left: 6px;
+    padding: 1px 5px;
+    border: 1px solid #ffffff2a;
+    border-radius: 4px;
+    font: 600 9px var(--font);
+    color: #8fa3b8;
+  }
+}
+
+@media (hover: hover) {
+  .item:hover .tip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+// ——— Tablet: yalnızca simgeler ———
+@media (max-width: 1180px) {
+  .label {
+    display: none;
+  }
+  .item {
+    width: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+  .tip {
+    display: block;
+  }
+}
+
+// ——— Telefon: başparmak bölgesinde alt çubuk ———
+@media (max-width: 850px) {
+  :host {
+    position: fixed;
+    top: auto;
+    bottom: max(16px, env(safe-area-inset-bottom));
+    animation-name: nav-up;
+    transform: translateX(-50%);
+  }
+  .nav {
+    padding: 6px;
+    border-radius: 18px;
+    background: #0a1424d9;
+  }
+  .indicator {
+    top: 6px;
+    bottom: 6px;
+    border-radius: 12px;
+  }
+  .item {
+    width: 46px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  .ico,
+  .ico svg,
+  .ico oc-app-icon {
+    width: 22px;
+    height: 22px;
+  }
+  .tip {
+    display: none;
+  }
+}
+
+@keyframes nav-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -80%);
+  }
+}
+@keyframes nav-up {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 30px);
+  }
+}

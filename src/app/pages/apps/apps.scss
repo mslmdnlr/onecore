@@ -1,9 +1,23 @@
+// Üst bar ile alt bilgi arasındaki alanda ortalanır; sığmazsa taşmak yerine kayar
 .chooser {
   position: absolute;
-  top: 50%;
+  top: 96px;
+  bottom: 56px;
   left: clamp(27px, 7vw, 110px);
+  display: flex;
+  flex-direction: column;
   width: min(800px, 86vw);
-  transform: translateY(-50%);
+  padding-block: 8px 28px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+
+  > :first-child {
+    margin-top: auto;
+  }
+  > :last-child {
+    margin-bottom: auto;
+  }
 
   h2 {
     margin: 0 0 16px;
@@ -204,8 +218,6 @@
     left: 25px;
     width: calc(100% - 50px);
     padding-bottom: 28px;
-    overflow-y: auto;
-    transform: none;
     h2 {
       font-size: 42px;
     }

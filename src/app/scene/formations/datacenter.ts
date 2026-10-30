@@ -222,18 +222,22 @@ export class DatacenterFormation implements Formation {
           break;
         }
         case 'stream': {
-          const r = this.racks[this.ref[i]];
+          const ri = this.ref[i];
+          const r = this.racks[ri];
           const u = (((this.a[i] + t * this.c[i]) % 1) + 1) % 1;
           const v = 1 - u;
-          // Kabin tepesi → çekirdek tepesi (karesel Bezier)
-          const cx = r.x * 0.55;
-          const cz = r.z * 0.55;
-          const x = v * v * r.x + 2 * v * u * cx;
-          const y = v * v * (RACK_TOP + 0.02) + 2 * v * u * 1.3 + u * u * CORE_TOP;
-          const z = v * v * r.z + 2 * v * u * cz;
+          // Kabin tepesi → çekirdek tepesindeki halkada kendi giriş noktası (karesel Bezier)
+          const ang = Math.atan2(r.z, r.x) + (ri % 2 ? 0.08 : -0.08);
+          const ex = Math.cos(ang) * 0.24;
+          const ez = Math.sin(ang) * 0.24;
+          const cx = r.x * 0.5;
+          const cz = r.z * 0.5;
+          const x = v * v * r.x + 2 * v * u * cx + u * u * ex;
+          const y = v * v * (RACK_TOP + 0.02) + 2 * v * u * 1.25 + u * u * (CORE_TOP - 0.05);
+          const z = v * v * r.z + 2 * v * u * cz + u * u * ez;
           const tr = this.b[i];
-          const w = tr * 0.5;
-          put(T, i, x, y, z, TEAL[0] + (1 - TEAL[0]) * w, TEAL[1] + (1 - TEAL[1]) * w, TEAL[2] + (1 - TEAL[2]) * w, 0.15 + 0.85 * tr, 1.2 + tr * 1.3);
+          const w = tr * 0.35;
+          put(T, i, x, y, z, TEAL[0] + (1 - TEAL[0]) * w, TEAL[1] + (1 - TEAL[1]) * w, TEAL[2] + (1 - TEAL[2]) * w, 0.08 + 0.62 * tr, 0.9 + tr * 0.8);
           break;
         }
         case 'air': {

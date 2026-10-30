@@ -4,17 +4,50 @@
     <meta charset="utf-8" />
     <title>OneCore — Tüm veri tek merkezde</title>
     <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="OneCore: konfigürasyon, varlık, değişiklik ve servis yönetimini tek merkezde buluşturan kurumsal veri platformu." />
     <meta name="theme-color" content="#03060d" />
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta name="color-scheme" content="dark" />
+    <meta property="og:title" content="OneCore — Tüm veri tek merkezde" />
+    <meta property="og:description" content="Tüm sistemler. Tüm ilişkiler. Tüm değişiklikler. Tek bir dijital evrende." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap" rel="stylesheet" />
+    <style>
+      /* Angular yüklenene kadar görünen açılış ekranı */
+      .boot {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: #03060d;
+      }
+      .boot svg {
+        width: 56px;
+        height: 56px;
+        animation: boot 1.4s ease-in-out infinite;
+      }
+      @keyframes boot {
+        50% {
+          opacity: 0.35;
+          transform: scale(0.94);
+        }
+      }
+    </style>
   </head>
   <body>
-    <app-root></app-root>
+    <app-root>
+      <div class="boot" aria-label="OneCore yükleniyor">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="17" fill="none" stroke="#a5e4ff" stroke-opacity=".45" stroke-width="2.5" />
+          <ellipse cx="32" cy="32" rx="18" ry="6.5" fill="none" stroke="#a5e4ff" stroke-width="2.5" transform="rotate(-25 32 32)" />
+          <circle cx="32" cy="32" r="6" fill="#a5e4ff" />
+        </svg>
+      </div>
+    </app-root>
+    <noscript>OneCore'u kullanmak için JavaScript'i etkinleştirin.</noscript>
   </body>
 </html>

@@ -85,6 +85,9 @@ export class SceneEngine {
   private width = 1;
   private height = 1;
   private dpr = 1;
+  /** Yavaş cihazlarda düşürülen piksel yoğunluğu tavanı */
+  private maxDpr = 2;
+  private slowFrames = 0;
   private last = 0;
   private raf = 0;
   private readonly unbind: () => void;
@@ -159,7 +162,7 @@ export class SceneEngine {
   private resize = () => {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.dpr = Math.min(window.devicePixelRatio || 1, this.maxDpr);
     this.renderer?.resize(this.width, this.height, this.dpr);
     this.overlay.width = Math.round(this.width * this.dpr);
     this.overlay.height = Math.round(this.height * this.dpr);
@@ -270,8 +273,10 @@ export class SceneEngine {
 
   private frame = (ms: number) => {
     const t = ms / 1000;
-    const dt = this.last ? Math.min(0.05, t - this.last) : 0.016;
+    const raw = this.last ? t - this.last : 0.016;
+    const dt = Math.min(0.05, raw);
     this.last = t;
+    this.adaptQuality(raw);
 
     this.updateCamera(t, dt);
 
@@ -319,6 +324,16 @@ export class SceneEngine {
     this.raf = requestAnimationFrame(this.frame);
   };
 
+  /** Kareler sürekli yavaşsa (≈35 fps altı) çözünürlüğü 1×'e indir */
+  private adaptQuality(frameTime: number) {
+    if (this.maxDpr === 1 || frameTime > 0.5) return;
+    this.slowFrames = frameTime > 0.028 ? this.slowFrames + 1 : Math.max(0, this.slowFrames - 2);
+    if (this.slowFrames > 90) {
+      this.maxDpr = 1;
+      this.resize();
+    }
+  }
+
   private drawParticles(t: number, dt: number, cyw: number, syw: number, cp: number, sp: number) {
     const r = this.renderer;
     if (!r) return;
@@ -329,7 +344,8 @@ export class SceneEngine {
 
     // Biçim değişince önce yavaş ve dağınık, sonra sıkı takip
     const m = t - this.modeSince;
-    const base = Math.min(40, 1.3 + m * m * 5);
+    // "Hareketi azalt" tercihinde parçacıklar beklemeden yerine oturur
+    const base = this.reducedMotion ? 60 : Math.min(40, 1.3 + m * m * 5);
     for (let l = 0; l < RATE_LEVELS; l++) this.lerp[l] = 1 - Math.exp(-dt * base * (0.55 + (l / (RATE_LEVELS - 1)) * 0.9));
     const offK = 1 - Math.exp(-dt * 9);
 
