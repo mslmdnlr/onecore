@@ -1,0 +1,94 @@
+<div class="ws" [class.collapsed]="collapsed()">
+  <aside class="side" aria-label="Radar">
+    <div class="app-id">
+      <span class="app-ico"><oc-app-icon icon="radar" color="#ffb065" /></span>
+      <div class="app-txt">
+        <strong>Radar</strong>
+        <small>Olay ve değişiklik izleme</small>
+      </div>
+    </div>
+
+    <nav class="menu" aria-label="Radar menüsü">
+      @for (group of menu; track group.label) {
+        <div class="grp">{{ group.label }}</div>
+        @for (item of group.items; track item.label) {
+          @if (item.soon || !item.path) {
+            <span class="link soon" [title]="item.label + ' — yakında'" aria-disabled="true">
+              <ng-container *ngTemplateOutlet="icon; context: { $implicit: item.icon }" />
+              <span class="lbl">{{ item.label }}</span>
+              <em>Yakında</em>
+            </span>
+          } @else {
+            <a
+              class="link"
+              [routerLink]="item.path"
+              routerLinkActive="active"
+              ariaCurrentWhenActive="page"
+              [title]="collapsed() ? item.label : ''"
+            >
+              <ng-container *ngTemplateOutlet="icon; context: { $implicit: item.icon }" />
+              <span class="lbl">{{ item.label }}</span>
+              @if (badge(item.badge); as n) {
+                <span class="count" [class.hot]="item.badge === 'alarms'">{{ n }}</span>
+              }
+            </a>
+          }
+        }
+      }
+    </nav>
+
+    <div class="side-foot">
+      <button class="live" type="button" [class.on]="store.live()" (click)="store.toggleLive()" [attr.aria-pressed]="store.live()">
+        <i></i>
+        <span class="lbl">{{ store.live() ? 'Canlı akış' : 'Akış duraklatıldı' }}</span>
+      </button>
+      <button
+        class="collapse"
+        type="button"
+        (click)="collapsed.set(!collapsed())"
+        [attr.aria-label]="collapsed() ? 'Menüyü genişlet' : 'Menüyü daralt'"
+        [title]="collapsed() ? 'Menüyü genişlet' : 'Menüyü daralt'"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+      </button>
+    </div>
+  </aside>
+
+  <section class="main">
+    <router-outlet />
+  </section>
+</div>
+
+<ng-template #icon let-name>
+  <svg class="mi" viewBox="0 0 24 24" aria-hidden="true">
+    @switch (name) {
+      @case ('overview') {
+        <rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" />
+        <rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" />
+      }
+      @case ('events') {
+        <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
+      }
+      @case ('alarms') {
+        <path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+      }
+      @case ('changes') {
+        <circle cx="6" cy="5.5" r="2.5" /><circle cx="6" cy="18.5" r="2.5" /><circle cx="18" cy="8.5" r="2.5" />
+        <path d="M6 8v8M18 11c0 3.5-3.5 4.5-9.5 6" />
+      }
+      @case ('correlation') {
+        <circle cx="5" cy="12" r="2.5" /><circle cx="19" cy="5" r="2.5" /><circle cx="19" cy="19" r="2.5" />
+        <path d="M7.3 11 16.7 6M7.3 13l9.4 5" />
+      }
+      @case ('reports') {
+        <path d="M4 20V11M10 20V4M16 20v-7M22 20H2" />
+      }
+      @case ('rules') {
+        <path d="M4 6h16M4 12h10M4 18h7" /><path d="m16 16 2 2 4-4" />
+      }
+      @case ('settings') {
+        <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" />
+      }
+    }
+  </svg>
+</ng-template>

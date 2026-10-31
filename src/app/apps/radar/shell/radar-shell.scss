@@ -1,0 +1,345 @@
+:host {
+  --app: #ffb065;
+  position: absolute;
+  inset: 92px 0 0 0;
+  display: block;
+  pointer-events: auto;
+}
+
+.ws {
+  display: grid;
+  grid-template-columns: 252px minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 28px);
+  height: 100%;
+  padding: 0 clamp(16px, 2vw, 28px) 0 clamp(16px, 2.6vw, 40px);
+  transition: grid-template-columns 0.35s cubic-bezier(0.3, 0.9, 0.3, 1);
+
+  &.collapsed {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+}
+
+// ——— Sol menü ———
+.side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 20px;
+  padding: 14px 10px 10px;
+  overflow: hidden;
+  border: 1px solid #ffffff14;
+  border-radius: 18px;
+  background: linear-gradient(170deg, #0e1a2cdd, #08111fe6);
+  backdrop-filter: blur(16px);
+  animation: side-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.app-id {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 2px 6px 16px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #ffffff10;
+}
+
+.app-ico {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--app) 16%, transparent);
+  oc-app-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.app-txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  strong {
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  small {
+    overflow: hidden;
+    font-size: 11px;
+    color: #7f93a8;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.menu {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.grp {
+  padding: 14px 10px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #5f7287;
+  white-space: nowrap;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: #9fb0c3;
+  font-size: 13.5px;
+  font-weight: 550;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    color 0.2s;
+
+  &:hover:not(.soon) {
+    background: #ffffff0a;
+    color: #e8f0f8;
+  }
+  &.active {
+    background: color-mix(in srgb, var(--app) 14%, transparent);
+    color: #fff;
+    .mi {
+      color: var(--app);
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 9px;
+      bottom: 9px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--app);
+      box-shadow: 0 0 10px var(--app);
+    }
+  }
+  &:focus-visible {
+    outline: 2px solid var(--app);
+    outline-offset: -2px;
+  }
+  &.soon {
+    color: #5f7287;
+    cursor: default;
+    em {
+      margin-left: auto;
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5f7287;
+    }
+  }
+}
+
+.mi {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: color 0.2s;
+}
+
+.count {
+  min-width: 22px;
+  margin-left: auto;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #ffffff12;
+  color: #c9d6e4;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  &.hot {
+    background: #ff5d5d26;
+    color: #ffb3b3;
+  }
+}
+
+.side-foot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid #ffffff10;
+}
+
+.live {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  height: 36px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: #8fa3b8;
+  font-size: 12px;
+  cursor: pointer;
+  &:hover {
+    background: #ffffff0a;
+  }
+  i {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6f8399;
+  }
+  &.on i {
+    background: #62e6b4;
+    box-shadow: 0 0 10px #62e6b4;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--app);
+  }
+}
+
+.collapse {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: #8fa3b8;
+  cursor: pointer;
+  &:hover {
+    background: #ffffff0a;
+    color: #fff;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--app);
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    transition: transform 0.3s;
+  }
+}
+
+// Daraltılmış menü: yalnızca simgeler
+.collapsed {
+  .app-txt,
+  .lbl,
+  .grp,
+  .link em {
+    display: none;
+  }
+  .app-id {
+    justify-content: center;
+    padding-inline: 0;
+  }
+  .link {
+    justify-content: center;
+    padding: 0;
+  }
+  .count {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    padding: 1px 4px;
+    font-size: 9px;
+  }
+  .side-foot {
+    flex-direction: column;
+  }
+  .live {
+    justify-content: center;
+    padding: 0;
+  }
+  .collapse svg {
+    transform: rotate(180deg);
+  }
+}
+
+// ——— İçerik ———
+.main {
+  min-width: 0;
+  overflow-y: auto;
+  padding: 0 4px 32px 0;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff22 transparent;
+}
+
+// ——— Telefon: menü içeriğin üstünde yatay şerit ———
+@media (max-width: 850px) {
+  :host {
+    inset: 76px 0 84px 0;
+  }
+  .ws,
+  .ws.collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 14px;
+    padding: 0 14px;
+  }
+  .side {
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
+    padding: 6px;
+    border-radius: 14px;
+  }
+  .app-id,
+  .grp,
+  .side-foot,
+  .link.soon {
+    display: none;
+  }
+  .menu {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+  }
+  .link {
+    flex: none;
+    height: 36px;
+    &.active::before {
+      display: none;
+    }
+  }
+}
+
+@keyframes side-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.4;
+  }
+}

@@ -5,6 +5,7 @@ import { HoverInfo } from './types';
 
 @Component({
   selector: 'oc-scene',
+  host: { '[class.dim]': 'dim()' },
   template: `
     <div class="aura"></div>
     <canvas #gl></canvas>
@@ -23,6 +24,15 @@ import { HoverInfo } from './types';
       inset: 0;
       z-index: 0;
       display: block;
+      transition:
+        opacity 0.8s ease,
+        filter 0.8s ease;
+    }
+    /* Çalışma alanında veri ekranları okunsun diye sahne geri planda kalır */
+    :host(.dim) {
+      opacity: 0.28;
+      filter: saturate(0.7);
+      pointer-events: none;
     }
     canvas {
       position: absolute;
@@ -84,6 +94,7 @@ import { HoverInfo } from './types';
 })
 export class Scene {
   private readonly state = inject(SceneState);
+  protected readonly dim = this.state.dim;
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
   private readonly glRef = viewChild.required<ElementRef<HTMLCanvasElement>>('gl');
   private readonly overlayRef = viewChild.required<ElementRef<HTMLCanvasElement>>('overlay');

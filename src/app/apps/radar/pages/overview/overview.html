@@ -1,0 +1,107 @@
+<div class="ws-page">
+  <header class="ws-head">
+    <div>
+      <div class="ws-crumb"><b>Radar</b> / Genel Bakış</div>
+      <h1 class="ws-title">Genel Bakış</h1>
+      <p class="ws-sub">Son 24 saat · {{ clock(store.now()) }} itibarıyla</p>
+    </div>
+    <div class="ws-actions">
+      <a class="ws-btn" routerLink="../alarmlar">Alarmlar</a>
+      <a class="ws-btn solid" routerLink="../olaylar">Olayları incele</a>
+    </div>
+  </header>
+
+  @let k = kpi();
+  <section class="kpis" aria-label="Özet göstergeler">
+    <a class="ws-panel kpi" routerLink="../olaylar" style="--c: #ffb065">
+      <span class="k-label">Açık olay</span>
+      <strong class="k-value">{{ k.open }}</strong>
+      <span class="k-sub">Son 1 saatte {{ k.lastHour }} yeni</span>
+      <oc-sparkline [values]="spark().total" />
+    </a>
+    <a class="ws-panel kpi" routerLink="../alarmlar" style="--c: #ff5d5d">
+      <span class="k-label">Onay bekleyen alarm</span>
+      <strong class="k-value">{{ k.alarms }}</strong>
+      <span class="k-sub"><span class="sev" [style.--c]="SEVERITY.kritik.color"><i>{{ SEVERITY.kritik.icon }}</i>{{ k.critical }} kritik</span></span>
+      <oc-sparkline [values]="spark().critical" />
+    </a>
+    <a class="ws-panel kpi" routerLink="../degisiklikler" style="--c: #a5b4ff">
+      <span class="k-label">Değişiklik · 24 sa</span>
+      <strong class="k-value">{{ k.changes }}</strong>
+      <span class="k-sub">{{ k.running }} uygulanıyor</span>
+      @if (k.next) {
+        <span class="k-next">Sıradaki: <b>{{ k.next.ci }}</b> · {{ k.nextIn }} sa sonra</span>
+      }
+    </a>
+    <div class="ws-panel kpi">
+      <span class="k-label">Ortalama çözüm süresi</span>
+      <strong class="k-value">{{ k.mttr }}</strong>
+      <span class="k-sub">
+        <span class="pill" [style.--c]="k.mttrOk ? '#62e6b4' : '#ff9f43'">{{ k.mttrOk ? 'Hedefte' : 'Hedef aşıldı' }}</span>
+        · hedef {{ target }} dk
+      </span>
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="ws-panel chart-panel">
+      <div class="ws-panel-head">
+        <h2>Olay akışı · saatlik</h2>
+        <span class="meta">Son 24 saat · {{ store.events().length }} olay</span>
+      </div>
+      <oc-bar-chart [data]="bars()" unit="olay" summary="Son 24 saatte saatlik olay sayısı" style="--c: #ffb065" />
+    </div>
+
+    <div class="ws-panel">
+      <div class="ws-panel-head">
+        <h2>Onay bekleyen alarmlar</h2>
+        <a routerLink="../alarmlar">Tümü →</a>
+      </div>
+      @for (a of alarms(); track a.ci) {
+        <a class="alarm" routerLink="../olaylar" [queryParams]="{ ci: a.ci }">
+          <span class="sev" [style.--c]="SEVERITY[a.severity].color"><i>{{ SEVERITY[a.severity].icon }}</i>{{ SEVERITY[a.severity].label }}</span>
+          <span class="a-body">
+            <b>{{ a.title }}</b>
+            <small>{{ a.ci }} · {{ a.eventIds.length }} olay · {{ ago(a.time, store.now()) }}</small>
+          </span>
+        </a>
+      } @empty {
+        <p class="ws-empty">Onay bekleyen alarm yok.</p>
+      }
+    </div>
+  </section>
+
+  <section class="row even">
+    <div class="ws-panel">
+      <div class="ws-panel-head">
+        <h2>Son değişiklikler</h2>
+        <a routerLink="../degisiklikler">Tümü →</a>
+      </div>
+      @for (c of recentChanges(); track c.id) {
+        <div class="change">
+          <span class="mono muted">{{ c.id }}</span>
+          <span class="c-title">{{ c.title }}</span>
+          <span class="pill" [style.--c]="CHANGE_STATUS[c.status].color">{{ CHANGE_STATUS[c.status].label }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="ws-panel">
+      <div class="ws-panel-head">
+        <h2>En çok açık olayı olan CI'lar</h2>
+        <span class="meta">Açık olay sayısı</span>
+      </div>
+      <ul class="hbars">
+        @for (c of store.topCis(); track c.ci) {
+          <li>
+            <a routerLink="../olaylar" [queryParams]="{ ci: c.ci }">
+              <span class="h-label">{{ c.ci }}</span>
+              <span class="h-track"><span class="h-bar" [style.width.%]="(c.value / topMax()) * 100"></span></span>
+              <span class="h-value">{{ c.value }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </section>
+</div>

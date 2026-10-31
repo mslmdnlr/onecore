@@ -9,7 +9,7 @@ import { NAV_ITEMS } from '../main-nav/main-nav';
 
 interface Command {
   id: string;
-  group: 'Gezinme' | 'Eylemler' | 'Yakında';
+  group: 'Gezinme' | 'Radar' | 'Eylemler' | 'Yakında';
   label: string;
   hint: string;
   color: string;
@@ -33,6 +33,24 @@ const COMMANDS: Command[] = [
       icon: d.icon,
       keywords: d.url,
       url: d.url,
+    }),
+  ),
+  ...[
+    ['genel-bakis', 'Genel Bakış', 'pano ozet gosterge'],
+    ['olaylar', 'Olaylar', 'olay event incident'],
+    ['alarmlar', 'Alarmlar', 'alarm onay'],
+    ['degisiklikler', 'Değişiklikler', 'degisiklik change chg'],
+    ['korelasyon', 'Korelasyon', 'neden iliski'],
+  ].map(
+    ([path, label, keywords]): Command => ({
+      id: `radar-${path}`,
+      group: 'Radar',
+      label: `Radar › ${label}`,
+      hint: '',
+      color: '#ffb065',
+      icon: 'radar',
+      keywords,
+      url: `/radar/${path}`,
     }),
   ),
   { id: 'scan', group: 'Eylemler', label: 'Radar taramasını başlat', hint: 'Radar', color: '#ffb065', icon: 'radar', keywords: 'tara olay alarm sinyal', url: '/radar', fx: 'scan' },

@@ -1,8 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
+import { NavLink } from '../../core/navigation';
 import { SceneState } from '../../core/scene-state';
 
 @Component({
   selector: 'oc-radar',
+  imports: [NavLink],
   template: `
     <section class="page" style="--accent: #ffc48d">
       <div class="scenehead">
@@ -17,12 +19,13 @@ import { SceneState } from '../../core/scene-state';
           <div class="stat"><b>{{ stats().alarms }}</b><span>ALARM</span></div>
           <div class="stat"><b>{{ stats().correlations }}</b><span>KORELASYON</span></div>
         </div>
-        <div class="rise" style="--d: 420">
-          <button class="primary" type="button" (click)="scan()">
-            {{ scanned() ? 'Yeniden tara' : 'Radar taramasını başlat' }} <span class="arrow">{{ scanned() ? '↻' : '↗' }}</span>
+        <div class="buttons rise" style="--d: 420">
+          <a class="primary" ocNav="/radar/genel-bakis" [dive]="true">Radar'a gir <span class="arrow">↗</span></a>
+          <button class="secondary" type="button" (click)="scan()">
+            {{ scanned() ? 'Yeniden tara' : 'Taramayı başlat' }} <span class="arrow">{{ scanned() ? '↻' : '◉' }}</span>
           </button>
         </div>
-        <div class="micro rise" style="--d: 520">CANLANDIRMA DEMODUR · GERÇEK ZAMANLI VERİ YOK</div>
+        <div class="micro rise" style="--d: 520">DEMO VERİLERİ · GERÇEK ZAMANLI KAYNAK BAĞLI DEĞİL</div>
       </div>
       <div class="cursorhint">SÜRÜKLE / DÖNDÜR &nbsp;·&nbsp; KAYDIR / YAKINLAŞ</div>
     </section>

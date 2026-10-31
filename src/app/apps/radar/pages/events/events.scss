@@ -1,0 +1,257 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.seg .ws-chip {
+  --c: var(--app);
+}
+
+.table-panel {
+  padding: 0;
+  overflow: hidden;
+  transition: margin-right 0.3s ease;
+  &.with-drawer {
+    margin-right: min(440px, 40%);
+  }
+}
+
+.scroll {
+  max-height: calc(100vh - 300px);
+  min-height: 240px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff22 transparent;
+}
+
+.title-cell {
+  max-width: 360px;
+  b {
+    display: block;
+    overflow: hidden;
+    font-weight: 600;
+    color: #e8f0f8;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  small {
+    font-size: 11.5px;
+  }
+}
+
+.right {
+  text-align: right;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.more {
+  margin: 0;
+  padding: 14px;
+  text-align: center;
+  font-size: 12px;
+  color: #7f93a8;
+}
+
+// ——— Detay paneli ———
+.drawer {
+  position: fixed;
+  z-index: 8;
+  top: 92px;
+  right: clamp(16px, 2vw, 28px);
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(420px, calc(100vw - 32px));
+  padding: 18px 20px 20px;
+  overflow-y: auto;
+  border: 1px solid #ffffff1c;
+  border-radius: 18px;
+  background: linear-gradient(170deg, #101d31f7, #0a1322fa);
+  box-shadow: -30px 0 80px -30px #000;
+  animation: drawer-in 0.32s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+  scrollbar-width: thin;
+
+  h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+  h3 {
+    margin: 6px 0 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6f8399;
+  }
+}
+
+.d-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  border: 0;
+  border-radius: 8px;
+  background: #ffffff0a;
+  color: #9fb0c3;
+  cursor: pointer;
+  &:hover {
+    background: #ffffff18;
+    color: #fff;
+  }
+  &:focus-visible {
+    outline: 2px solid var(--app);
+  }
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+}
+
+.d-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid #ffffff10;
+  border-radius: 12px;
+  background: #ffffff10;
+  div {
+    padding: 10px 12px;
+    background: #0c1727;
+  }
+  dt {
+    font-size: 11px;
+    color: #7f93a8;
+  }
+  dd {
+    margin: 2px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.related {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--app) 35%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--app) 8%, transparent);
+  color: inherit;
+  text-decoration: none;
+  &:hover {
+    background: color-mix(in srgb, var(--app) 13%, transparent);
+  }
+  b {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  small {
+    font-size: 12px;
+    color: #9fb0c3;
+  }
+}
+
+.r-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--app);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 0 14px 18px;
+    border-left: 1px solid #ffffff14;
+    margin-left: 4px;
+    &::before {
+      content: '';
+      position: absolute;
+      left: -4.5px;
+      top: 3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #0c1727;
+      border: 1.5px solid var(--app);
+    }
+    &:last-child {
+      border-left-color: transparent;
+    }
+  }
+  time {
+    font-size: 11.5px;
+    color: #7f93a8;
+    font-variant-numeric: tabular-nums;
+  }
+  span {
+    font-size: 13px;
+    color: #c9d6e4;
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .table-panel.with-drawer {
+    margin-right: 0;
+  }
+  .hide-sm {
+    display: none;
+  }
+}
+
+@media (max-width: 850px) {
+  .drawer {
+    top: 76px;
+    bottom: 84px;
+  }
+  .scroll {
+    max-height: none;
+  }
+}

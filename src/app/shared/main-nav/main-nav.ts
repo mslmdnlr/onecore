@@ -96,7 +96,11 @@ export class MainNav {
     ),
     { initialValue: this.router.url },
   );
-  protected readonly active = computed(() => this.url().split(/[?#]/)[0] || '/');
+  /** Aktif sekme; uygulama alt sayfalarında (/radar/olaylar) üst uygulama seçili kalır */
+  protected readonly active = computed(() => {
+    const path = this.url().split(/[?#]/)[0] || '/';
+    return NAV_ITEMS.find((i) => (i.url === '/' ? path === '/' : path === i.url || path.startsWith(i.url + '/')))?.url ?? path;
+  });
   protected readonly activeColor = computed(() => NAV_ITEMS.find((i) => i.url === this.active())?.color ?? '#9ddcff');
 
   /** Yeniden boyutlanma ve font yüklenmesinde vurguyu yeniden ölçmek için */

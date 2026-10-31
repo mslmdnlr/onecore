@@ -1,0 +1,141 @@
+<div class="ws-page">
+  <header class="ws-head">
+    <div>
+      <div class="ws-crumb"><b>Radar</b> / Olaylar</div>
+      <h1 class="ws-title">Olaylar</h1>
+      <p class="ws-sub">{{ filtered().length }} olay · {{ store.openEvents().length }} aktif</p>
+    </div>
+    <div class="ws-actions">
+      <label class="ws-field">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+        <input
+          type="search"
+          placeholder="Olay, CI veya kaynak ara"
+          aria-label="Olaylarda ara"
+          [value]="query()"
+          (input)="query.set($any($event.target).value)"
+        />
+      </label>
+    </div>
+  </header>
+
+  <div class="filters">
+    <div class="ws-chips" role="group" aria-label="Önem süzgeci">
+      @for (s of SEVERITIES; track s) {
+        <button
+          type="button"
+          class="ws-chip"
+          [class.on]="sev().has(s)"
+          [attr.aria-pressed]="sev().has(s)"
+          [style.--c]="SEVERITY[s].color"
+          (click)="toggleSev(s)"
+        >
+          <i>{{ SEVERITY[s].icon }}</i>{{ SEVERITY[s].label }} <small>{{ sevCounts()[s] }}</small>
+        </button>
+      }
+    </div>
+    <div class="ws-chips seg" role="radiogroup" aria-label="Durum süzgeci">
+      @for (f of statusFilters; track f.key) {
+        <button type="button" class="ws-chip" role="radio" [class.on]="status() === f.key" [attr.aria-checked]="status() === f.key" (click)="status.set(f.key)">
+          {{ f.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="ws-panel table-panel" [class.with-drawer]="selected()">
+    <div class="scroll">
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>Önem</th>
+            <th>Olay</th>
+            <th>CI</th>
+            <th class="hide-sm">Kaynak</th>
+            <th>Durum</th>
+            <th class="right">Zaman</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of filtered().slice(0, limit); track e.id) {
+            <tr
+              tabindex="0"
+              [class.selected]="selectedId() === e.id"
+              [class.fresh]="store.fresh().has(e.id)"
+              (click)="open(e)"
+              (keydown.enter)="open(e)"
+            >
+              <td><span class="sev" [style.--c]="SEVERITY[e.severity].color"><i>{{ SEVERITY[e.severity].icon }}</i>{{ SEVERITY[e.severity].label }}</span></td>
+              <td class="title-cell">
+                <b>{{ e.title }}</b>
+                <small class="mono muted">{{ e.id }}@if (e.count > 1) { · {{ e.count }}× tekrar }</small>
+              </td>
+              <td>{{ e.ci }}</td>
+              <td class="hide-sm muted">{{ e.source }}</td>
+              <td><span class="pill" [style.--c]="STATUS[e.status].color">{{ STATUS[e.status].label }}</span></td>
+              <td class="right muted nowrap">{{ ago(e.time, store.now()) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (!filtered().length) {
+        <p class="ws-empty">Süzgece uyan olay yok.</p>
+      } @else if (filtered().length > limit) {
+        <p class="more">İlk {{ limit }} olay gösteriliyor · aramayı daraltın</p>
+      }
+    </div>
+  </div>
+</div>
+
+@if (selected(); as e) {
+  <aside class="drawer" role="dialog" aria-modal="false" [attr.aria-label]="e.id + ' olay ayrıntısı'">
+    <header class="d-head">
+      <span class="sev" [style.--c]="SEVERITY[e.severity].color"><i>{{ SEVERITY[e.severity].icon }}</i>{{ SEVERITY[e.severity].label }}</span>
+      <span class="mono muted">{{ e.id }}</span>
+      <button type="button" class="close" (click)="selectedId.set(null)" aria-label="Kapat (Esc)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+      </button>
+    </header>
+
+    <h2>{{ e.title }}</h2>
+    <span class="pill" [style.--c]="STATUS[e.status].color">{{ STATUS[e.status].label }}</span>
+
+    <div class="d-actions">
+      @if (e.status === 'acik') {
+        <button type="button" class="ws-btn" (click)="store.setStatus(e.id, 'inceleniyor')">İncelemeye al</button>
+      }
+      @if (e.status !== 'cozuldu') {
+        <button type="button" class="ws-btn solid" (click)="store.setStatus(e.id, 'cozuldu')">Çözüldü olarak işaretle</button>
+      } @else {
+        <button type="button" class="ws-btn" (click)="store.setStatus(e.id, 'acik')">Yeniden aç</button>
+      }
+    </div>
+
+    <dl class="facts">
+      <div><dt>CI</dt><dd>{{ e.ci }}</dd></div>
+      <div><dt>CI tipi</dt><dd>{{ e.ciType }}</dd></div>
+      <div><dt>Kaynak</dt><dd>{{ e.source }}</dd></div>
+      <div><dt>Tekrar</dt><dd>{{ e.count }}×</dd></div>
+      <div><dt>İlk görülme</dt><dd>{{ stamp(e.time) }}</dd></div>
+      <div><dt>{{ e.status === 'cozuldu' ? 'Çözüm süresi' : 'Açık kalma' }}</dt><dd>{{ duration(openFor(e)) }}</dd></div>
+    </dl>
+
+    @if (change(); as c) {
+      <a class="related" routerLink="../korelasyon">
+        <span class="r-label">Olası neden · değişiklik</span>
+        <b><span class="mono">{{ c.id }}</span> {{ c.title }}</b>
+        <small>{{ stamp(c.start) }} başladı · korelasyonu incele →</small>
+      </a>
+    }
+
+    <h3>Zaman çizelgesi</h3>
+    <ol class="timeline">
+      @for (l of e.log.slice().reverse(); track $index) {
+        <li>
+          <time>{{ stamp(l.at) }}</time>
+          <span>{{ l.text }}</span>
+        </li>
+      }
+    </ol>
+  </aside>
+}
